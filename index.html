@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CATS-V2V: A Real-World Vehicle-to-Vehicle Cooperative Perception Dataset with Complex Adverse Traffic Scenarios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #FFFFFF;
+            color: #444444;
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Color System */
+        :root {
+            /* Primary Accent (Blue) */
+            --primary-500: #0057B7;
+            --primary-700: #00438D;
+            --primary-100: #E6F0F8;
+            
+            /* Neutral (Grayscale) */
+            --neutral-0: #FFFFFF;
+            --neutral-100: #F8F9FA;
+            --neutral-500: #EAECEF;
+            --neutral-700: #444444;
+            --neutral-900: #111111;
+            
+            /* Spacing (8px grid system) */
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 32px;
+            --space-xl: 48px;
+            --space-xxl: 64px;
+            --space-xxxl: 96px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: var(--space-xxxl) var(--space-md);
+        }
+
+        /* Typography */
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--neutral-900);
+            text-align: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--neutral-700);
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--neutral-900);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--neutral-900);
+            margin-bottom: var(--space-sm);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            text-align: center;
+            margin-bottom: var(--space-xxl);
+        }
+
+        .button-group {
+            display: inline-flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 200ms ease-out;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-500);
+            color: var(--neutral-0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-700);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--neutral-100);
+            color: var(--neutral-900);
+            border: 1px solid var(--neutral-500);
+        }
+
+        .btn-secondary:hover {
+            background-color: #EAECEF;
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Abstract Block - Enhanced Design */
+        .abstract-section {
+            margin-bottom: var(--space-xxl);
+        }
+
+        .abstract-content {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border: 2px solid var(--primary-100);
+            padding: var(--space-xxl);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 87, 183, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .abstract-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-700));
+        }
+
+        .abstract-text {
+            color: var(--neutral-900);
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: var(--space-md);
+            text-align: justify;
+        }
+
+        .abstract-text:first-child::first-letter {
+            font-size: 4em;
+            font-weight: 700;
+            float: left;
+            line-height: 0.8;
+            margin: 0.1em 0.1em 0 0;
+            color: var(--primary-500);
+        }
+
+        .abstract-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--neutral-500);
+            font-size: 14px;
+            color: var(--neutral-700);
+        }
+
+        .abstract-keywords {
+            font-style: italic;
+        }
+
+        .abstract-tags {
+            display: flex;
+            gap: var(--space-xs);
+        }
+
+        .abstract-tag {
+            background-color: var(--primary-100);
+            color: var(--primary-700);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Authors Section - Academic Style */
+        .authors-section {
+            margin-bottom: var(--space-xxl);
+        }
+
+        .authors-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .authors-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-sm) var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .author {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--neutral-900);
+            position: relative;
+        }
+
+        .author.first-author {
+            font-weight: 600;
+            color: var(--primary-700);
+        }
+
+        .author.corresponding-author {
+            font-weight: 600;
+            color: var(--primary-700);
+        }
+
+        .author.corresponding-author::after {
+            content: "";
+        }
+        
+        .correspondence-marker {
+            color: var(--primary-500);
+            font-weight: 700;
+            margin-left: 1px;
+            font-size: 16px;
+        }
+
+        .author-affiliation {
+            font-size: 14px;
+            color: var(--neutral-600);
+            margin-left: var(--space-xs);
+        }
+
+        .authors-separator {
+            color: var(--neutral-500);
+            margin: 0 var(--space-xs);
+        }
+
+        .authors-equal {
+            font-size: 14px;
+            color: var(--neutral-700);
+            font-style: italic;
+            margin-top: var(--space-sm);
+        }
+
+        .authors-institutions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+
+        .institution {
+            font-size: 16px;
+            color: var(--neutral-700);
+            font-weight: 500;
+        }
+
+        .institution-name {
+            color: var(--primary-600);
+        }
+
+        .authors-footer {
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--neutral-500);
+            font-size: 14px;
+            color: var(--neutral-700);
+        }
+
+        .author-placeholder {
+            text-align: center;
+            padding: var(--space-xl);
+            background-color: var(--neutral-100);
+            border: 2px dashed var(--neutral-500);
+            border-radius: 8px;
+            color: var(--neutral-700);
+        }
+
+        /* Section Dividers */
+        .section-divider {
+            border: none;
+            height: 1px;
+            background-color: var(--neutral-500);
+            margin: var(--space-xxl) 0;
+        }
+
+        /* Dataset Badge */
+        .dataset-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background-color: var(--primary-100);
+            color: var(--primary-700);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: var(--space-sm) auto;
+            border: 2px solid var(--primary-500);
+        }
+
+        .dataset-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Dataset Statistics */
+        .stats-section {
+            margin-bottom: var(--space-xxl);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--space-md);
+            background-color: var(--neutral-100);
+            border-radius: 8px;
+            border: 1px solid var(--neutral-500);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-500);
+            display: block;
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--neutral-700);
+            font-weight: 500;
+        }
+
+        /* Highlights Section */
+        .highlights-section {
+            margin-bottom: var(--space-xxl);
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .highlight-item {
+            padding: var(--space-md);
+            background-color: var(--neutral-0);
+            border: 1px solid var(--neutral-500);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .highlight-icon {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto var(--space-sm);
+            color: var(--primary-500);
+        }
+
+        .highlight-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: var(--space-xs);
+        }
+
+        .highlight-desc {
+            font-size: 14px;
+            color: var(--neutral-700);
+            line-height: 1.5;
+        }
+
+        /* Citation Section */
+        .citation-section {
+            margin-bottom: var(--space-xxl);
+        }
+
+        .citation-content {
+            background-color: var(--neutral-100);
+            border: 1px solid var(--neutral-500);
+            border-radius: 8px;
+            padding: var(--space-md);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: var(--neutral-700);
+            line-height: 1.6;
+        }
+
+        .citation-actions {
+            margin-top: var(--space-sm);
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: var(--primary-500);
+            color: var(--neutral-0);
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 200ms ease-out;
+        }
+
+        .btn-small:hover {
+            background-color: var(--primary-700);
+        }
+
+        /* License Section */
+        .license-section {
+            text-align: center;
+            margin-top: var(--space-xxl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--neutral-500);
+        }
+
+        .license-text {
+            font-size: 14px;
+            color: var(--neutral-700);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-xxl) var(--space-sm);
+            }
+            
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            h2 {
+                font-size: 28px;
+            }
+            
+            .authors-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            /* Authors responsive */
+            .authors-list {
+                flex-direction: column;
+                gap: var(--space-xs);
+            }
+            
+            .authors-separator {
+                display: none;
+            }
+            
+            .authors-institutions {
+                flex-direction: column;
+                gap: var(--space-xs);
+            }
+            
+            /* Abstract responsive */
+            .abstract-content {
+                padding: var(--space-lg);
+            }
+            
+            .abstract-text:first-child::first-letter {
+                font-size: 3em;
+            }
+            
+            .abstract-meta {
+                flex-direction: column;
+                gap: var(--space-sm);
+                align-items: flex-start;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+            
+            .container {
+                padding: 0;
+            }
+            
+            .hero-title {
+                color: #000000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero-section">
+            <div class="dataset-badge">
+                <svg class="dataset-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+                </svg>
+                Dataset
+            </div>
+            <h1 class="hero-title">CATS-V2V: A Real-World Vehicle-to-Vehicle Cooperative Perception Dataset with Complex Adverse Traffic Scenarios</h1>
+            <p class="hero-subtitle">A comprehensive, multi-modal dataset for advancing vehicle-to-vehicle perception research in challenging driving conditions and complex traffic environments.</p>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <div class="button-group">
+                    <a href="#download" class="btn btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Download Dataset
+                    </a>
+                    <a href="https://github.com" class="btn btn-secondary">
+                        <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        View on GitHub
+                    </a>
+                    <a href="#paper" class="btn btn-secondary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Paper
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dataset Statistics Section -->
+        <section class="stats-section">
+            <h2>Dataset Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">100</span>
+                    <span class="stat-label">Video Clips</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">60K</span>
+                    <span class="stat-label">LiDAR Frames</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1.26M</span>
+                    <span class="stat-label">Camera Images</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">750K</span>
+                    <span class="stat-label">GNSS/IMU Records</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10</span>
+                    <span class="stat-label">Weather Conditions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10</span>
+                    <span class="stat-label">Test Locations</span>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- Abstract Section -->
+        <section class="abstract-section">
+            <h2>Abstract</h2>
+            <div class="abstract-content">
+                <div class="abstract-text">
+                    <p>Vehicle-to-Vehicle (V2V) cooperative perception has great potential to enhance autonomous driving performance by overcoming perception limitations in complex adverse traffic scenarios (CATS). Meanwhile, data serves as the fundamental infrastructure for modern autonomous driving AI. However, due to stringent data collection requirements, existing datasets focus primarily on ordinary traffic scenarios, constraining the benefits of cooperative perception. To address this challenge, we introduce CATS-V2V, the first-of-its-kind real-world dataset for V2V cooperative perception under complex adverse traffic scenarios.</p>
+                    
+                    <p>The dataset was collected by two hardware time-synchronized vehicles, covering 10 weather and lighting conditions across 10 diverse locations. The 100-clip dataset includes 60K frames of 10 Hz LiDAR point clouds and 1.26M multi-view 30 Hz camera images, along with 750K anonymized yet high-precision RTK-fixed GNSS and IMU records. Correspondingly, we provide time-consistent 3D bounding box annotations for objects, as well as static scenes to construct a 4D BEV representation.</p>
+                    
+                    <p>On this basis, we propose a target-based temporal alignment method, ensuring that all objects are precisely aligned across all sensor modalities. We hope that CATS-V2V, the largest-scale, most supportive, and highest-quality dataset of its kind to date, will benefit the autonomous driving community in related tasks.</p>
+                </div>
+                
+                <div class="abstract-meta">
+                    <div class="abstract-keywords">
+                        <strong>Keywords:</strong> Vehicle-to-Vehicle • Cooperative Perception • Autonomous Driving • Dataset • Adverse Weather
+                    </div>
+                    <div class="abstract-tags">
+                        <span class="abstract-tag">V2V</span>
+                        <span class="abstract-tag">CVPR 2025</span>
+                        <span class="abstract-tag">Dataset</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Highlights Section -->
+        <section class="highlights-section">
+            <h2>Key Highlights</h2>
+            <div class="highlights-grid">
+                <div class="highlight-item">
+                    <svg class="highlight-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <div class="highlight-title">Hardware Time-Synchronized</div>
+                    <div class="highlight-desc">Precise temporal alignment across all sensor modalities using hardware synchronization</div>
+                </div>
+                <div class="highlight-item">
+                    <svg class="highlight-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9l-5 4.87L18.18 22 12 18.9 5.82 22 7 13.87 2 9l6.91-1.74L12 2z"/>
+                    </svg>
+                    <div class="highlight-title">Complex Adverse Scenarios</div>
+                    <div class="highlight-desc">First dataset focused on challenging weather and lighting conditions</div>
+                </div>
+                <div class="highlight-item">
+                    <svg class="highlight-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <div class="highlight-title">4D BEV Representation</div>
+                    <div class="highlight-desc">Comprehensive 4D Bird's Eye View representation for temporal analysis</div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- Authors Section -->
+        <section class="authors-section">
+            <h2>Authors</h2>
+            <div class="authors-content">
+                <div class="authors-list">
+                    <span class="author first-author">Hangyu Li<sup class="author-affiliation">¹</sup>*</span>
+                    <span class="authors-separator">·</span>
+                    <span class="author first-author">Bofeng Cao<sup class="author-affiliation">¹</sup>*</span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Zhaohui Liang<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Wuzhen Li<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Juyoung Oh<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Yuxuan Chen<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Shixiao Liang<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Hang Zhou<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Chengyuan Ma<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Jiaxi Liu<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Zheng Li<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Peng Zhang<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">KeKe Long<sup class="author-affiliation">¹</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Maolin Liu<sup class="author-affiliation">²</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Jackson Jiang<sup class="author-affiliation">²</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Chunlei Yu<sup class="author-affiliation">²</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Shengxiang Liu<sup class="author-affiliation">²</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author">Hongkai Yu<sup class="author-affiliation">³</sup></span>
+                    <span class="authors-separator">·</span>
+                    <span class="author corresponding-author">Xiaopeng Li<sup class="author-affiliation">¹</sup><span class="correspondence-marker">†</span></span>
+                </div>
+                
+                <div class="authors-equal">* Equal contribution • † Corresponding author</div>
+                
+                <div class="authors-institutions">
+                    <div class="institution">
+                        <span class="institution-name">¹ University of Wisconsin-Madison</span> • 
+                        <span class="institution-name">² wuwen-ai</span> • 
+                        <span class="institution-name">³ Cleveland State University</span>
+                    </div>
+                </div>
+                
+                <div class="authors-footer">
+                    <strong>Correspondence:</strong> Xiaopeng Li (University of Wisconsin-Madison)
+                </div>
+            </div>
+        </section>
+
+        <!-- Citation Section -->
+        <section class="citation-section">
+            <h2>Citation</h2>
+            <div class="citation-content">
+                @inproceedings{li2025catsv2v,
+  title={CATS-V2V: A Real-World Vehicle-to-Vehicle Cooperative Perception Dataset with Complex Adverse Traffic Scenarios},
+  author={Li, Hangyu and Cao, Bofeng and Liang, Zhaohui and Li, Wuzhen and Oh, Juyoung and Chen, Yuxuan and Liang, Shixiao and Zhou, Hang and Ma, Chengyuan and Liu, Jiaxi and Li, Zheng and Zhang, Peng and Long, KeKe and Li, Xiaopeng and Liu, Maolin and Jiang, Jackson and Yu, Chunlei and Liu, Shengxiang and Yu, Hongkai},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2025}
+}
+            </div>
+            <div class="citation-actions">
+                <a href="#" class="btn-small" onclick="navigator.clipboard.writeText(document.querySelector('.citation-content').textContent); alert('Citation copied to clipboard!'); return false;">Copy Citation</a>
+                <a href="#" class="btn-small">Download BibTeX</a>
+            </div>
+        </section>
+
+        <!-- License Section -->
+        <div class="license-section">
+            <p class="license-text">
+                This project is licensed under the <a href="#" style="color: var(--primary-500); text-decoration: none;">Creative Commons Attribution 4.0 International License</a>.<br>
+                © 2025 CATS-V2V Dataset Project. All rights reserved.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
